@@ -1,4 +1,4 @@
-import org.dtj.config.BuildConfig;
+import org.stj.config.BuildConfig;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class FunctionalTest {
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表';";
     
     private String sourceCodePath = "src/test/java";
-    private String basePackage = "org.dtj.test";
+    private String basePackage = "org.stj.test";
     private String resourcePath = "src/test/resources";
     
     /**
@@ -83,7 +83,7 @@ public class FunctionalTest {
         config.setServiceImplPackageName(basePackage + ".service.impl");
         // controller包名
         config.setControllerPackageName(basePackage + ".controller");
-        DataToJava.parse(config);
+        SqlToJava.parse(config);
     }
     
     /**
@@ -117,6 +117,6 @@ public class FunctionalTest {
         config.setServiceImplPackageName(basePackage + ".service.impl");
     
         config.setControllerPackageName(basePackage + ".controller");
-        DataToJava.parse(config);
+        SqlToJava.parse(config);
     }
 }
