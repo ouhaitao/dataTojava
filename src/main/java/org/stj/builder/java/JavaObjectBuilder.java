@@ -13,7 +13,7 @@ public class JavaObjectBuilder {
      */
     private boolean useLombok;
     /**
-     *
+     * 类的类型
      */
     private ClassType classType;
     /**

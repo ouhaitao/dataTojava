@@ -44,16 +44,24 @@ public class XmlBuilder {
     
         @Override
         public void addChild(XmlNode node) {
-            throw new UnsupportedOperationException("RootNode can't add Child");
+            throw new UnsupportedOperationException("RootNode can't add child");
+        }
+        
+        @Override
+        public void addProperty(String key, String value) {
+            throw new UnsupportedOperationException("RootNode can't add property");
         }
     
         @Override
         public List<XmlNode> getChildList() {
-            throw new UnsupportedOperationException("RootNode can't get Child");
+            throw new UnsupportedOperationException("RootNode can't get child");
         }
     
         /**
-         * 与父类区别在于当前节点输出代码不用linePrefix
+         * 与XmlNode的区别:
+         * 1. 多了header的输出
+         * 2. root节点不输出linePrefix
+         * 3. root节点的子节点之间多了一个换行符
          * @param linePrefix 行前缀
          */
         @Override
