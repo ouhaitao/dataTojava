@@ -1,6 +1,5 @@
 package org.stj.test.controller;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.stj.test.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +21,17 @@ public class UserController {
 	}
 
 	@PostMapping("/add")
-	public boolean add(@RequestBody UserDTO dto) {
+	public boolean add(UserDTO dto) {
 		return userService.add(dto);
 	}
 
 	@PostMapping("/delete")
-	public boolean delete(@RequestBody UserDTO dto) {
+	public boolean delete(UserDTO dto) {
 		return userService.delete(dto);
 	}
 
 	@PostMapping("/update")
-	public boolean update(@RequestBody UserDTO dto) {
+	public boolean update(UserDTO dto) {
 		return userService.update(dto);
 	}
 
