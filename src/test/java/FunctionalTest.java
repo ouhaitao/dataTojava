@@ -119,4 +119,41 @@ public class FunctionalTest {
         config.setControllerPackageName(basePackage + ".controller");
         SqlToJava.parse(config);
     }
+    
+    // 接口方法前面多了一个空格 x
+    // controller POST加上RequestBody标签 x
+    // 使用lombok情况下生成transfer方法有问题 x
+    // updateSQL不应该修改id x
+    @Test
+    public void test() {
+        String sql = "CREATE TABLE `fm_news_refresh_text` (\n" +
+            "  `id` bigint(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',\n" +
+            "  `content` varchar(20) NOT NULL COMMENT '文案内容',\n" +
+            "  `index_no` varchar(20) NOT NULL COMMENT '排序号',\n" +
+            "  `disable` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除 0：否，1：是',\n" +
+            "  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n" +
+            "  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
+            "  PRIMARY KEY (`id`) USING BTREE\n" +
+            ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='刷新文案';";
+        BuildConfig config = new BuildConfig();
+        config.setSql(sql);
+        config.setUseLombok(true);
+        config.setBaseClassPath(sourceCodePath);
+        config.setBusinessName("RefreshText");
+    
+        config.setDoPackageName(basePackage + ".domain");
+    
+        config.setDtoPackageName(basePackage + ".dto");
+    
+        config.setMapperClassPackageName(basePackage + ".mapper");
+    
+        config.setMapperXmlBaseClassPath(resourcePath);
+    
+        config.setServiceInterfacePackageName(basePackage + ".service");
+    
+        config.setServiceImplPackageName(basePackage + ".service.impl");
+    
+        config.setControllerPackageName(basePackage + ".controller");
+        SqlToJava.parse(config);
+    }
 }

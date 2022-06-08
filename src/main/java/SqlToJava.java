@@ -70,7 +70,7 @@ public final class SqlToJava {
         JavaObjectBuilder serviceImplBuilder = buildServiceImpl(config.getServiceImplPackageName(), config.getServiceImplClassName(), serviceInterfaceBuilder, dtoBuilder, doBuilder, mapperClassBuilder);
         saveFile(config.getServiceImplBaseClassPath(), config.getServiceImplPackageName(), config.getServiceImplClassName() + ".java", serviceImplBuilder.getCode());
         // 生成controller
-        JavaObjectBuilder controllerBuilder = buildController(config.getControllerPackageName(), config.getControllerClassName(), serviceInterfaceBuilder, dtoBuilder);
+        JavaObjectBuilder controllerBuilder = buildController(config, serviceInterfaceBuilder, dtoBuilder);
         saveFile(config.getControllerBaseClassPath(), config.getControllerPackageName(), config.getControllerClassName() + ".java", controllerBuilder.getCode());
     }
     
@@ -294,6 +294,9 @@ public final class SqlToJava {
         
         XmlNode set = new XmlNode("set");
         for (ColumnDefinition columnDefinition : columnDefinitionList) {
+            if (primaryKeyColumn.contains(columnDefinition.getColumnName())) {
+                continue;
+            }
             XmlNode anIf = new XmlNode("if");
             String columnName = columnDefinition.getColumnName();
             String fieldName = getFieldName(columnName);
@@ -462,16 +465,21 @@ public final class SqlToJava {
         return builder;
     }
     
-    private JavaObjectBuilder buildController(String packageName, String className, JavaObjectBuilder serviceBuilder, JavaObjectBuilder dtoBuilder) {
-        JavaObjectBuilder builder = new JavaObjectBuilder(packageName, className);
+    private JavaObjectBuilder buildController(BuildConfig config, JavaObjectBuilder serviceBuilder, JavaObjectBuilder dtoBuilder) {
+        JavaObjectBuilder builder = new JavaObjectBuilder(config.getControllerPackageName(), config.getControllerClassName());
         builder.addImport(serviceBuilder.getReference());
         builder.addImport(dtoBuilder.getReference());
         builder.addImport("org.springframework.beans.factory.annotation.Autowired");
         builder.addImport("org.springframework.web.bind.annotation.RestController");
         builder.addImport("org.springframework.web.bind.annotation.GetMapping");
         builder.addImport("org.springframework.web.bind.annotation.PostMapping");
+        builder.addImport("org.springframework.web.bind.annotation.RequestBody");
         
         builder.addAnnotation("@RestController");
+        if (config.getBusinessName() != null && !config.getBusinessName().equals("")) {
+            builder.addImport("org.springframework.web.bind.annotation.RequestMapping");
+            builder.addAnnotation("@RequestMapping(\"/" + config.getBusinessName() + "\")");
+        }
     
         String serviceClassName = serviceBuilder.getClassName();
         String serviceClassParamName = serviceClassName.substring(0, 1).toLowerCase(Locale.ROOT) + serviceClassName.substring(1);
@@ -491,7 +499,7 @@ public final class SqlToJava {
         List<String> addBody = new LinkedList<>();
         addBody.add("return " + serviceClassParamName + ".add(dto);");
         JavaMethod add = new JavaMethod(false, Modifier.PUBLIC, "boolean", "add", addBody);
-        add.addParam(dtoBuilder.getClassName(), "dto");
+        add.addParam("@RequestBody", dtoBuilder.getClassName(), "dto");
         add.addAnnotation("@PostMapping(\"/add\")");
         builder.addMethod(add);
     
@@ -499,7 +507,7 @@ public final class SqlToJava {
         List<String> deleteBody = new LinkedList<>();
         deleteBody.add("return " + serviceClassParamName + ".delete(dto);");
         JavaMethod delete = new JavaMethod(false, Modifier.PUBLIC, "boolean", "delete", deleteBody);
-        delete.addParam(dtoBuilder.getClassName(), "dto");
+        delete.addParam("@RequestBody", dtoBuilder.getClassName(), "dto");
         delete.addAnnotation("@PostMapping(\"/delete\")");
         builder.addMethod(delete);
     
@@ -507,7 +515,7 @@ public final class SqlToJava {
         List<String> updateBody = new LinkedList<>();
         updateBody.add("return " + serviceClassParamName + ".update(dto);");
         JavaMethod update = new JavaMethod(false, Modifier.PUBLIC, "boolean", "update", updateBody);
-        update.addParam(dtoBuilder.getClassName(), "dto");
+        update.addParam("@RequestBody", dtoBuilder.getClassName(), "dto");
         update.addAnnotation("@PostMapping(\"/update\")");
         builder.addMethod(update);
         

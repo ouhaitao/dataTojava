@@ -1,11 +1,11 @@
 package org.stj.test.service.impl;
 
-import org.springframework.stereotype.Service;
-import org.stj.test.service.UserService;
-import org.stj.test.domain.UserDO;
 import org.stj.test.dto.UserDTO;
+import org.stj.test.domain.UserDO;
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.stj.test.mapper.UserMapper;
+import org.stj.test.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {

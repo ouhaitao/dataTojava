@@ -14,9 +14,6 @@
 	<update id="update">
 		update `user`
 		<set>
-			<if test="id != null">
-				`id` = #{id},
-			</if>
 			<if test="username != null">
 				`username` = #{username},
 			</if>

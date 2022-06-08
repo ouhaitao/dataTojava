@@ -32,6 +32,7 @@ public class JavaMethod {
     /**
      * 参数列表
      * eg. "Integer param"
+     * eg. "@RequestBody Integer param"
      */
     protected List<String> paramList;
     /**
@@ -65,13 +66,21 @@ public class JavaMethod {
     }
     
     public void addParam(String type, String name) {
+        addParam(null, type, name);
+    }
+    
+    public void addParam(String annotation, String type, String name) {
         if (type == null || type.equals("")) {
             throw new BuildException("param's type is empty");
         }
         if (name == null || name.equals("")) {
             throw new BuildException("param's type is empty");
         }
-        paramList.add(type + " " + name);
+        String param = type + " " + name;
+        if (annotation != null && !annotation.equals("")) {
+            param = annotation + " " + param;
+        }
+        paramList.add(param);
     }
     
     public void addAnnotation(String annotation) {
@@ -97,7 +106,7 @@ public class JavaMethod {
         annotationList.forEach(annotation -> code.append(linePrefix).append(annotation).append("\n"));
         
         // 构造方法签名
-        code.append(linePrefix).append(modifier.getName()).append(" ").append(returnType).append(" ").append(name);
+        code.append(linePrefix).append(modifier.getName()).append(modifier.getName().length() == 0 ? "" : " ").append(returnType).append(" ").append(name);
         code.append("(");
         if (paramList.size() > 0) {
             paramList.forEach(param -> code.append(param).append(", "));

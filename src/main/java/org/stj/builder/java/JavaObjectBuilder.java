@@ -44,9 +44,13 @@ public class JavaObjectBuilder {
      * 方法列表
      */
     private List<JavaMethod> methodList;
-    
+    /**
+     * getter方法
+     */
     private Map<String, GetterMethod> getterMethodMap;
-    
+    /**
+     * setter方法
+     */
     private Map<String, SetterMethod> setterMethodMap;
     
     public JavaObjectBuilder(String packageName, String className) {
@@ -97,16 +101,21 @@ public class JavaObjectBuilder {
         }
         String name = field.getName();
         String javaType = field.getTypeName();
-        if (generateGetter) {
-            // 添加getter/setter方法
+        // 添加getter方法
+        if (useLombok || generateGetter) {
             GetterMethod getter = new GetterMethod(typeReference, javaType, name);
-            addMethod(getter);
             getterMethodMap.put(name, getter);
+            if (generateGetter) {
+                addMethod(getter);
+            }
         }
-        if (generateSetter) {
+        // 添加setter方法
+        if (useLombok || generateSetter) {
             SetterMethod setter = new SetterMethod(typeReference, javaType, name);
-            addMethod(setter);
             setterMethodMap.put(name, setter);
+            if (generateSetter) {
+                addMethod(setter);
+            }
         }
     }
     
